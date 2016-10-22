@@ -1,0 +1,34 @@
+{
+  "name": "gitmarked",
+  "version": "1.0.0",
+  "description": "Project marking and commenting tool for educators and students",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BatBrain/GitMarked.git"
+  },
+  "author": "Sol Ferguson, Anton Taranenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BatBrain/GitMarked/issues"
+  },
+  "homepage": "https://github.com/BatBrain/GitMarked#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "passport": "^0.3.2",
+    "passport-github2": "^0.1.10",
+    "pg": "^6.1.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.24.5",
+    "body-parser": "^1.15.2",
+    "dotenv": "^2.0.0",
+    "morgan": "^1.7.0",
+    "node-sass-middleware": "^0.9.8"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.2",
+  }
+}
