@@ -11,7 +11,8 @@
     <script type="text/javascript" src="/scripts/app.js"></script>
 	</head>
 	<body>
-		<% if (!this.user) { %>
+	<h1>LAYOUT</h1>
+		<% if (!user) { %>
 			<p>
 			<a href="/">Home</a> |
 			<a href="/login">Log In</a>
@@ -23,6 +24,6 @@
 			<a href="/logout">Log Out</a>
 			</p>
 		<% } %>
-		<%- this.body %>
+		<%- body %>
 	</body>
 </html>
