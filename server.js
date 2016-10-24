@@ -17,6 +17,22 @@ const knexLogger  = require('knex-logger');
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
+// Includes sequelize
+var Sequelize = require('sequelize')
+  , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
+      host: ENV.DB_HOST,
+      dialect: 'postgres',
+      port: ENV.DB_PORT
+    });
+
+sequelize
+  .authenticate()
+  .then(function(err) {
+    console.log('Connection has been established successfully.');
+  }, function (err) {
+    console.log('Unable to connect to the database:', err);
+  });
+
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.

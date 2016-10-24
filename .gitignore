@@ -44,3 +44,9 @@ jspm_packages
 
 # Output of 'npm pack'
 *.tgz
+
+# ds store
+.DS_Store
+
+# ignoring the sequelize config file
+db/config.js
