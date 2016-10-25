@@ -13,25 +13,26 @@ const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
 const morgan      = require('morgan');
 const knexLogger  = require('knex-logger');
+const db          = require('./db/models/index');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 
 // Includes sequelize
-var Sequelize = require('sequelize')
-  , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
-      host: ENV.DB_HOST,
-      dialect: 'postgres',
-      port: ENV.DB_PORT
-    });
+// var Sequelize = require('sequelize')
+//   , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
+//       host: ENV.DB_HOST,
+//       dialect: 'postgres',
+//       port: ENV.DB_PORT
+//     });
 
-sequelize
-  .authenticate()
-  .then(function(err) {
-    console.log('Connection has been established successfully.');
-  }, function (err) {
-    console.log('Unable to connect to the database:', err);
-  });
+// sequelize
+//   .authenticate()
+//   .then(function(err) {
+//     console.log('Connection has been established successfully.');
+//   }, function (err) {
+//     console.log('Unable to connect to the database:', err);
+//   });
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
