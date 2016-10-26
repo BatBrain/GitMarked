@@ -56,8 +56,7 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-<<<<<<< HEAD
-// Includes sequelize
+//=== sequelize ===================================================================
 var Sequelize = require('sequelize')
   , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
       host: ENV.DB_HOST,
@@ -73,12 +72,6 @@ sequelize
     console.log('Unable to connect to the database:', err);
   });
 
-// Load the logger first so all (static) HTTP requests are logged to STDOUT
-// 'dev' = Concise output colored by response status for development use.
-//         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-app.use(morgan('dev'));
-=======
->>>>>>> feature/githuboauth
 
 //=== MiddleWare ===================================================================
 
@@ -97,6 +90,7 @@ app.use("/styles", sass({
 }));
 app.use(cookieParser());
 app.use(express.static("public"));
+app.use(express.static("codemirror"))
 app.use(expressSession({ secret: 'wJWnfa2C7EjSSGpY', resave: false, saveUninitialized: false }));
 app.use(flash());
 
@@ -147,11 +141,15 @@ app.get('/login', function(req, res){
   res.render('login', { user: req.user });
 });
 
-app.get('/codemirror2', function(req, res){
+app.get('/currentUser', ensureAuthenticated, function(req, res){
+  res.send(req.user)
+})
+
+app.get('/codemirror2', ensureAuthenticated, function(req, res){
   request(JSON.parse(req.user._raw).repos_url), (error, response, body) => {
     res.render('codemirror2', { user: req.user, resBody: body });
   }
-  res.render('codemirror2', { user: req.user });
+  res.render('codemirror', { user: req.user });
 })
 
 

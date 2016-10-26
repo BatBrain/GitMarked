@@ -1,0 +1,31 @@
+<script src="/scripts/bootstrap-treeview.js"></script>
+<script src="/scripts/tree.js"></script>
+
+<style type="text/css">
+      .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+
+      .treeview .list-group-item {
+      	cursor: pointer;
+      }
+
+      .treeview span.indent {
+      	margin-left: 10px;
+      	margin-right: 10px;
+      }
+
+      .treeview span.icon {
+      	width: 12px;
+      	margin-right: 5px;
+      }
+
+      .treeview .node-disabled {
+      	color: silver;
+      	cursor: not-allowed;
+      }
+    </style>
+<p style="color: gray">Current mode: <span id="modeinfo">text/plain</span></p>
+<p>Filename, mime, or mode name: <input type=text value=foo.js id=mode> <button type=button onclick="change()">change mode</button></p>
+<script type="text/javascript" src="scripts/codemirror.js" delay>
+
+</script>
+<div id="tree"></div>
