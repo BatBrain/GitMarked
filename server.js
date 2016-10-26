@@ -1,7 +1,7 @@
 "use strict";
 
 require('dotenv').config();
-require('http')
+const http = require('http')
 
 const PORT                  = process.env.PORT || 8080;
 const ENV                   = process.env.ENV || "development";
@@ -78,6 +78,7 @@ passport.use(new GitHubStrategy({
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 
+
 //=== MiddleWare ===================================================================
 
 app.use(morgan('dev'));
@@ -101,7 +102,6 @@ app.use(flash());
 app.use(passport.initialize());
 //app.use(passport.session({ secret: 'wJWnfa2C7EjSSGpY', resave: false, saveUninitialized: false }));
 app.use(passport.session());
-
 
 
 //=== GitHub OAuth ===================================================================
@@ -134,6 +134,7 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/account', ensureAuthenticated, function(req, res){
+  // http.get('https://api.github.com/repos/a-taranenko/math_game/git/trees');
   res.render('account', { user: req.user });
 });
 
