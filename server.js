@@ -16,8 +16,9 @@ const cookieParser          = require('cookie-parser');
 const expressSession        = require("express-session");
 const GitHubStrategy        = require("passport-github2").Strategy;
 const methodOverride        = require("method-override");
-const ejs                   = require("ejs");
-const partial               = require('express-partials');
+const handlebars            = require('handlebars');
+const exphbs                = require('express-handlebars');
+// const partial               = require('express-partials');
 const chalk                 = require("chalk");
 const request               = require("request");
 const oauth2strategy        = require("passport-oauth2");
@@ -78,29 +79,16 @@ passport.use(new GitHubStrategy({
 // 'dev' = Concise output colored by response status for development use.
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 
-//=== sequelize ===================================================================
-var Sequelize = require('sequelize')
-  , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
-      host: ENV.DB_HOST,
-      dialect: 'postgres',
-      port: ENV.DB_PORT
-    });
-
-sequelize
-  .authenticate()
-  .then(function(err) {
-    console.log('Connection has been established successfully.');
-  }, function (err) {
-    console.log('Unable to connect to the database:', err);
-  });
-
 
 //=== MiddleWare ===================================================================
 
 app.use(morgan('dev'));
 
-app.set("view engine", "ejs");
-app.use(partial());
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+// app.set("view engine", "ejs");
+// app.use(partial());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
