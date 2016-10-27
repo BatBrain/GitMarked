@@ -2,7 +2,6 @@
 
 //Global tree (array of objects)
 var treeMaster = [];
-
 //=== Instatiates treeview after AJAX call ===================================================================
 $(() => {
   $.ajax({
@@ -10,32 +9,54 @@ $(() => {
     url: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f",
   }).done((response) => {
     treeMaster = populateTree(response)
+    treeMaster.forEach(function(node, index){
+      if (node.type == "tree") {
+        $.ajax({
+          method: "GET",
+          url: node.url,
+        }).done((response) => {
+          node.nodes = populateTree(response)
+        })
+      }
+    })
     console.log(treeMaster)
-      $('#tree').treeview({data: treeMaster, onNodeSelected: treeMaker});
+      $('#tree').treeview({data: treeMaster});
   })
 })
 
 //=== Conditionally assigns proper onNodeSelected AJAX query ===================================================================
+
+$('#tree').on('nodeSelected', function(event, object) {
+  // Your logic goes here
+});
 var treeMaker = function(event, object) {
-    if (object.type == "tree") {
-      $.ajax({
-        method: "GET",
-        url: object.url,
-      }).done((response) => {
-        console.log(object)
-        console.log(treeMaster)
-        treeMaster[object.tags].nodes = populateTree(response)
-        $('#tree').treeview({data: treeMaster, onNodeSelected: treeMaker});
-      })
-    } else if (object.type == "blob") {
-      $.ajax({
-        method: "GET",
-        url: object.url,
-        headers: {accept: "application/vnd.github.VERSION.raw"}
-      }).done((response) => {
-        editor.setValue(response)
-      });
-    }
+  if (object.type == "tree") {
+    console.log("EVENT:", event)
+    event.preventDefault()
+    var selectedNode = $('#tree').treeview('getSelected');
+    $.ajax({
+      method: "GET",
+      url: object.url,
+    }).done((response) => {
+      console.log("TREEMASTER", treeMaster)
+      console.log("OBJECT", object)
+      var nodePosition = Number(selectedNode[0].nodeId) * 10
+      object.nodes = populateTree(response)
+      var newNode = object
+      console.log("Selected Node:", selectedNode[0])
+      //console.log("New Node:", newNode)
+      $('#tree').treeview('updateNode', [ treeMaster[nodePosition], newNode, { silent: true } ]);
+      //$('#tree').treeview({data: treeMaster, onNodeSelected: treeMaker});
+    })
+  } else if (object.type == "blob") {
+    $.ajax({
+      method: "GET",
+      url: object.url,
+      headers: {accept: "application/vnd.github.VERSION.raw"}
+    }).done((response) => {
+      editor.setValue(response)
+    });
+  }
   }
 
 //Static tree for testing: https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f
@@ -58,6 +79,7 @@ function populateTree(res){
         expanded: false,
         selected: false
       },
+      object.onNodeSelected = treeMaker,
       object.tags = index
       if (object.type == "tree") { object.nodes = [] }
       //console.log(object)
