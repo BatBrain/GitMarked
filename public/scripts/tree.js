@@ -20,7 +20,7 @@ $(() => {
       }
     })
     console.log(treeMaster)
-      $('#tree').treeview({data: treeMaster});
+    $('#tree').treeview(treeMaster);
   })
 })
 
