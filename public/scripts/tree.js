@@ -27,15 +27,41 @@ $(() => {
           $.jstree.defaults.core.data
           $('#tree')
             .on('select_node.jstree', function (e, data) {
-              console.log("Delicious Data!:", data)
+              //console.log("Delicious Data!:", data)
               if (data.node.original.type == "blob") {
                 $.ajax({
                   method: "GET",
                   url: data.node.original.url,
                   headers: {accept: "application/vnd.github.VERSION.raw"}
-                }).done((response) => { editor.setValue(response) });
+                }).done((response) => {
+                  editor.setValue(response)
+                  CodeMirror.modeURL = "../codemirror/mode/%N/%N.js";
+                  var val = data.node.text, m, mode, spec;
+                  if (m = /.+\.([^.]+)$/.exec(val)) {
+                    var info = CodeMirror.findModeByExtension(m[1]);
+                    if (info) {
+                      mode = info.mode;
+                      spec = info.mime;
+                    }
+                  } else if (/\//.test(val)) {
+                    var info = CodeMirror.findModeByMIME(val);
+                    if (info) {
+                      mode = info.mode;
+                      spec = val;
+                    }
+                  } else {
+                    mode = spec = val;
+                  }
+                  if (mode) {
+                    editor.setOption("mode", spec);
+                    CodeMirror.autoLoadMode(editor, mode);
+                    document.getElementById("modeinfo").textContent = spec;
+                  } else {
+                    alert("Could not find a mode corresponding to " + val);
+                  }
+                });
               } else {
-                console.log("Oh look, time to do nothing!")
+                //console.log("Oh look, time to do nothing!")
                 return
               }
             })
@@ -58,7 +84,7 @@ function populateTree(res){
     //console.log("File extention: ", fileExt)
     var object = {
       "id" : cv.path,
-      "text" : pathArr[pathArr.length - 1],
+      "text" : " " + pathArr[pathArr.length - 1],
       "parent" : parentMaker(pathArr),
       "type" : cv.type,
       "url" : cv.url,

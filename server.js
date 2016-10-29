@@ -106,11 +106,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(cookieParser());
-app.use(lessMiddleware(__dirname + '/stylesheets', [{
-  debug: true,
-   dest: (__dirname + "/styles"),
-   pathRoot: (__dirname, 'public')
-}]));
+// app.use(lessMiddleware(__dirname + '/stylesheets', [{
+//   debug: true,
+//    dest: (__dirname + "/styles"),
+//    pathRoot: (__dirname, 'public')
+// }]));
 // app.use("/styles", sass({
 //   src: __dirname,
 //   dest: __dirname + "/public/styles",
