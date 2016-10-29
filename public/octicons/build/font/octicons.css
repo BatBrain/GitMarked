@@ -1,6 +1,6 @@
 
 @font-face {
-  font-family:"Octicons";
+  font-family:"octicons";
   src:url("octicons.eot?ef21c39f0ca9b1b5116e5eb7ac5eabe6");
   src:url("octicons.eot?#iefix") format("embedded-opentype"),
 		url("octicons.woff2?ef21c39f0ca9b1b5116e5eb7ac5eabe6") format("woff2"),
@@ -375,4 +375,3 @@
 .octicon-x:before { content:"\f081"; }
 
 .octicon-zap:before { content:"\26a1"; }
-

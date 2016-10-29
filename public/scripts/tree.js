@@ -14,6 +14,7 @@ function loadLESS ( filename ) {
 
 loadLESS("/stylesheets/file-icons")
 
+//examples url https://api.github.com/repos/DanBrooker/file-icons/git/trees/0f5d7379b0556c0d2e99110e2b6d9012922c9c31
 var treeMaster;
 $(() => {
   console.log('fn');
@@ -26,7 +27,14 @@ $(() => {
           $('#tree').jstree({
             "core" : {
               "data" : treeMaster
-            }
+            },
+            "types": {
+              ".atom": {
+                  "icon" : false,
+                  "a_attr": {"class" : "icon-file-directory", "data-name":".atom"}
+                }
+            },
+            "plugins": ["theme", "types"]
           });
         })
     console.log("Treemaster:", treeMaster)
@@ -38,23 +46,30 @@ function populateTree(res){
   var tree = res.tree.map((cv, index, arr) => {
     var pathArr = cv.path.split("/");
     var fileExt = cv.path.split(".")
+    console.log("File extention: ", fileExt)
     var object = {
       "id" : cv.path,
       "text" : pathArr[pathArr.length - 1],
       "parent" : parentMaker(pathArr),
-      "icon" : function(){
-        if (fileExt > 1){
-          return fileExt[fileExt.length - 1]
-        } else {
-          return "folder"
-        }
-      }
+      "icon" : false,
+      "a_attr" : typeMaker(fileExt)
     };
       return object;
     })
   console.log("Tree:", tree)
   return tree
   }
+
+function typeMaker(fileExt){
+  console.log("typeMaker input: ", fileExt)
+  if (fileExt.length > 1){
+    var attr = {"class" : "icon-file-directory", "data-name": `.${fileExt[fileExt.length - 1]}`}
+    console.log("ATTR:", attr)
+    return attr
+  } else {
+    return "folder"
+  }
+}
 
 function parentMaker(splitPath) {
   if (splitPath.length > 1) {
