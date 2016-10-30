@@ -7,7 +7,8 @@ const PORT                  = process.env.PORT || 8080;
 const ENV                   = process.env.ENV || "development";
 const express               = require("express");
 const bodyParser            = require("body-parser");
-const sass                  = require("node-sass-middleware");
+var lessMiddleware          = require('less-middleware');
+//const sass                  = require("node-sass-middleware");
 const app                   = express();
 const morgan                = require('morgan');
 const passport              = require("passport");
@@ -22,7 +23,7 @@ const chalk                 = require("chalk");
 const request               = require("request");
 const oauth2strategy        = require("passport-oauth2");
 
-const db                    = require('./db/models/index');
+//const db                    = require('./db/models/index');
 
 const GITHUB_CLIENT_ID      = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET  = process.env.GITHUB_CLIENT_SECRET
@@ -79,20 +80,20 @@ passport.use(new GitHubStrategy({
 //         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
 
 //=== sequelize ===================================================================
-var Sequelize = require('sequelize')
-  , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
-      host: ENV.DB_HOST,
-      dialect: 'postgres',
-      port: ENV.DB_PORT
-    });
-
-sequelize
-  .authenticate()
-  .then(function(err) {
-    console.log('Connection has been established successfully.');
-  }, function (err) {
-    console.log('Unable to connect to the database:', err);
-  });
+// var Sequelize = require('sequelize')
+//   , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
+//       host: ENV.DB_HOST,
+//       dialect: 'postgres',
+//       port: ENV.DB_PORT
+//     });
+//
+// sequelize
+//   .authenticate()
+//   .then(function(err) {
+//     console.log('Connection has been established successfully.');
+//   }, function (err) {
+//     console.log('Unable to connect to the database:', err);
+//   });
 
 
 //=== MiddleWare ===================================================================
@@ -104,16 +105,21 @@ app.use(partial());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
-app.use("/styles", sass({
-  src: __dirname + "/styles",
-  dest: __dirname + "/public/styles",
-  debug: true,
-  outputStyle: 'expanded'
-}));
 app.use(cookieParser());
-app.use(express.static("public"));
-app.use(express.static("codemirror"))
+// app.use(lessMiddleware(__dirname + '/stylesheets', [{
+//   debug: true,
+//    dest: (__dirname + "/styles"),
+//    pathRoot: (__dirname, 'public')
+// }]));
+// app.use("/styles", sass({
+//   src: __dirname,
+//   dest: __dirname + "/public/styles",
+//   debug: true,
+//   outputStyle: 'expanded',
+//   includePaths: [ '/node_modules/octicons/',  "/styles" ],
+// }));
 app.use(expressSession({ secret: 'wJWnfa2C7EjSSGpY', resave: false, saveUninitialized: false }));
+app.use(express.static("public"));
 app.use(flash());
 
 app.use(passport.initialize());
