@@ -16,14 +16,15 @@ const cookieParser          = require('cookie-parser');
 const expressSession        = require("express-session");
 const GitHubStrategy        = require("passport-github2").Strategy;
 const methodOverride        = require("method-override");
-const handlebars            = require('handlebars');
-const exphbs                = require('express-handlebars');
-// const partial               = require('express-partials');
+const ejs                   = require("ejs");
+const partial               = require('express-partials');
 const chalk                 = require("chalk");
 const request               = require("request");
 const oauth2strategy        = require("passport-oauth2");
-
-const db                    = require('./db/models/index');
+const Student               = require('./db/models/student');
+const Mentor                = require('./db/models/mentor');
+const Assignment            = require('./db/models/assignment');
+const Submitted_Assignment  = require('./db/models/submitted_assignment');
 
 const GITHUB_CLIENT_ID      = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET  = process.env.GITHUB_CLIENT_SECRET
@@ -59,36 +60,13 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-// Includes sequelize
-// var Sequelize = require('sequelize')
-//   , sequelize = new Sequelize(ENV.DB_NAME, ENV.DB_USER, ENV.DB_PASS, {
-//       host: ENV.DB_HOST,
-//       dialect: 'postgres',
-//       port: ENV.DB_PORT
-//     });
-
-// sequelize
-//   .authenticate()
-//   .then(function(err) {
-//     console.log('Connection has been established successfully.');
-//   }, function (err) {
-//     console.log('Unable to connect to the database:', err);
-//   });
-
-// Load the logger first so all (static) HTTP requests are logged to STDOUT
-// 'dev' = Concise output colored by response status for development use.
-//         The :status token will be colored red for server error codes, yellow for client error codes, cyan for redirection codes, and uncolored for all other codes.
-
 
 //=== MiddleWare ===================================================================
 
 app.use(morgan('dev'));
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
-
-// app.set("view engine", "ejs");
-// app.use(partial());
+app.set("view engine", "ejs");
+app.use(partial());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
@@ -123,14 +101,20 @@ app.get('/auth/github/callback',
   function(req, res) {
     req._parsedUrl.query
 
-    res.redirect('/');
+// console.log('=====AAAAA=====', req.user, '=====BBBBB=====');
+
+    res.redirect('/dashboard/mentor');
 });
 
 
 //=== ROUTES ===================================================================
 
 app.get("/", (req, res) => {
-  res.render('index', { user: req.user });
+  // Student.findOne().then(function(user) {
+  //   console.log(user.get('first_name'));
+  // });
+
+  res.render('index', { layout:false });
 });
 
 app.get('/logout', function(req, res){
@@ -139,7 +123,6 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/account', ensureAuthenticated, function(req, res){
-  // http.get('https://api.github.com/repos/a-taranenko/math_game/git/trees');
   res.render('account', { user: req.user });
 });
 
@@ -161,6 +144,58 @@ app.get('/codemirror2', ensureAuthenticated, function(req, res){
   }
   res.render('codemirror', { user: req.user });
 })
+
+app.get('/dashboard/student', ensureAuthenticated, function(req, res){
+  res.render('dashboard-student', { user: req.user });
+});
+
+app.get('/dashboard/mentor', ensureAuthenticated, function(req, res){
+  var assignmentList;
+
+  Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+    assignmentList = e;
+    res.render('dashboard-mentor', { user: req.user, assignment: assignmentList });
+  });
+});
+
+app.get('/assignments/:id', ensureAuthenticated, function(req, res){
+  var submittedAssignmentList;
+  var assignmentList;
+// select sa.*,s.first,s.last from submitted_assignments sa inner join students s on studens.id = submitted_assignments.student_id where sa.assignment_id = :id
+  Submitted_Assignment.findAll({
+    attributes: [
+      'id',
+      'assignment_url',
+      'status',
+      'assignment_id',
+      'student_id',
+      'mentor_id'
+      ],
+    where: {
+      assignment_id: req.params.id
+    },
+    include: [
+      { model: Assignment },
+      { model: Student },
+      { model: Mentor }
+      ]
+    }).then(function(e) {
+      console.log('==========', e,'==========');
+      submittedAssignmentList = e;
+
+      Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+        assignmentList = e;
+
+        res.render('assignment', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList });
+      });
+
+      // res.render('assignment', { user: req.user, submittedAssignment: submittedAssignmentList });
+  });
+
+// { model: Assignment,
+//       attributes: [] }
+
+});
 
 
 //=== MW Functions ===================================================================

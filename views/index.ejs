@@ -1,7 +1,33 @@
-  <h1>THIS IS THE INDEX</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
 
-    <% if (!user) { %>
-    	<h2>Welcome! Please log in.</h2>
-    <% } else { %>
-    	<h2>Hello, <%= user.displayName %>.</h2>
-    <% } %>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,400i,700,700i" rel="stylesheet" />
+
+    <title>Welcome to GitMarked</title>
+  </head>
+
+  <body style="font-family:'Titillium Web', sans-serif;">
+
+    <div class="center-greeting">
+      <img src="/images/free_logo_10_white-1.svg" width="320" height="180" class="center-block welcome-image">
+    </div>
+
+    <h2 class="greeting text-center">&lt WELCOME TO <span id="gitmarked-welcome">GITMARKED</span> &gt</h2>
+
+    <p class="github-login-text text-center">If you don't got it, Git it</p>
+
+    <p class="text-center login-container">
+      <a href="/auth/github" class="login">GitHub Login</a>
+    </p>
+  </body>
+</html>
+

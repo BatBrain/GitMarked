@@ -13,12 +13,12 @@ module.exports = {
       }], {});
     */
     return queryInterface.bulkInsert('Mentors', [{
-        first_name: 'Sol',
-        last_name: 'Ferguson',
-        github_name: 'BatBrain',
+        first_name: 'Anton',
+        last_name: 'Taranenko',
+        github_name: 'a-taranenko',
         createdAt: new Date(),
         updatedAt: new Date(),
-        school_id: 3
+        school_id: 9
       }]
     );
   },

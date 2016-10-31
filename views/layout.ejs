@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Passport-GitHub Example</title>
+		<title>GitMarked</title>
 
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+    <link rel="stylesheet" href="/vendor/sidebar.css" type="text/css" />
+    <link rel="stylesheet" href="/vendor/table.css" type="text/css" />
 
 		<script src="lib/codemirror.js"></script>
 		<link rel="stylesheet" href="lib/codemirror.css">
@@ -25,10 +27,24 @@
 
 
 		<script type="text/javascript" src="/scripts/app.js" defer></script>
+		<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,400i,700,700i" rel="stylesheet">
+		<script type="text/javascript" src="/scripts/table-click.js"></script>
 	</head>
-	<body>
-	<h1>LAYOUT</h1>
-		<% if (!user) { %>
+
+	<body style="font-family:'Titillium Web', sans-serif;">
+
+		<div class="navigation-bar">
+			<div class="nav-logo">
+				<img src="/images/free_logo_10_white-1.svg" width="160" height="90">
+			</div>
+			<div class="gitmarked-logo-name">GitMarked</div>
+			<div class="nav-logout"><a href="/logout" class="logout">Log Out</a></div>
+			<p class="nav-name"><%= user.displayName %> (<%= user.username %>)</p>
+		</div>
+
+	<!-- <h1><span style="background:rgba(0, 0, 0, 0);border:2px solid white;color:white;">LAYOUT</span></h1> -->
+
+<!-- 		<% if (!user) { %>
 			<p>
 			<a href="/">Home</a> |
 			<a href="/login">Log In</a>
@@ -39,7 +55,8 @@
 			<a href="/account">Account</a> |
 			<a href="/logout">Log Out</a>
 			</p>
-		<% } %>
+		<% } %> -->
+
 		<%- body %>
 	</body>
 </html>

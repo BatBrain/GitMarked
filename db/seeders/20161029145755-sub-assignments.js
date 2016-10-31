@@ -12,27 +12,30 @@ module.exports = {
         isBetaMember: false
       }], {});
     */
-    return queryInterface.bulkInsert('Students', [{
-        first_name: 'Sol',
-        last_name: 'Ferguson',
-        github_name: 'BatBrain',
+    return queryInterface.bulkInsert('Submitted_Assignments', [{
+        assignment_url: 'https://github.com/BatBrain/week2/tree/master/week2day1',
+        status: 'Submitted',
         createdAt: new Date(),
         updatedAt: new Date(),
-        school_id: 9
+        assignment_id: 13,
+        student_id: 11,
+        mentor_id: 8
       }, {
-        first_name: 'Mats',
-        last_name: 'Sundin',
-        github_name: 'm-sundin',
+        assignment_url: 'https://github.com/m-sundin/avatar-d',
+        status: 'Submitted',
         createdAt: new Date(),
         updatedAt: new Date(),
-        school_id: 9
+        assignment_id: 13,
+        student_id: 12,
+        mentor_id: 8
       }, {
-        first_name: 'Curtis',
-        last_name: 'Joseph',
-        github_name: 'c-joseph',
+        assignment_url: 'https://github.com/c-joseph/avatar-downloader',
+        status: 'Submitted',
         createdAt: new Date(),
         updatedAt: new Date(),
-        school_id: 9
+        assignment_id: 13,
+        student_id: 13,
+        mentor_id: 8
       }]
     );
   },
@@ -45,6 +48,6 @@ module.exports = {
       Example:
       return queryInterface.bulkDelete('Person', null, {});
     */
-    return queryInterface.bulkDelete('Students', null);
+    return queryInterface.bulkDelete('Submitted_Assignments', null);
   }
 };
