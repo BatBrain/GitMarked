@@ -1,5 +1,7 @@
+"use strict"
+
 CodeMirror.modeURL = "../codemirror/mode/%N/%N.js";
-var editor = CodeMirror(document.body, {
+let editor = CodeMirror(document.body, {
   lineWrapping: true,
   lineNumbers: true,
   showCursorWhenSelecting: true,
@@ -19,15 +21,40 @@ $(() => {
 
 function highlightLine(lineNumber) {
   lineNumber.forEach((cv, index) => {
-    var actualLineNumber = cv - 1;
+    let actualLineNumber = cv - 1;
     editor.addLineClass(actualLineNumber, 'wrap', 'bg-warning');
   })
-   //Line number is zero based index
-   //Select editor loaded in the DOM
-   //var myEditor = $("#body_EditorSource .CodeMirror");
-   //console.log(myEditor);
-   //console.log(myEditor[0].CodeMirror);
-   //var codeMirrorEditor = myEditor[0].CodeMirror;
-   //Set line css class
+};
 
-}
+let sampleComments = [
+  {
+    start: 1,
+    end: 3,
+    text: "Hi this is a test comment! Comments look super wonderful and are very handy!",
+    color: "green"
+  },
+  {
+    start: 5,
+    end: 5,
+    text: "Single line comment here!",
+    color: "green"
+  },
+  {
+    start: 7,
+    end: 8,
+    text: "This comment is orange!",
+    color: "orange",
+  },
+  {
+    start: 9,
+    end: 10,
+    text: "This comment is yellow!",
+    color: "yellow"
+  },
+  {
+    start: 11,
+    end: 12,
+    text: "This comment is blue!",
+    color: "blue"
+  }
+]
