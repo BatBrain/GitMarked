@@ -7,7 +7,8 @@ const PORT                  = process.env.PORT || 8080;
 const ENV                   = process.env.ENV || "development";
 const express               = require("express");
 const bodyParser            = require("body-parser");
-const sass                  = require("node-sass-middleware");
+var lessMiddleware          = require('less-middleware');
+//const sass                  = require("node-sass-middleware");
 const app                   = express();
 const morgan                = require('morgan');
 const passport              = require("passport");
@@ -70,16 +71,21 @@ app.use(partial());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
-app.use("/styles", sass({
-  src: __dirname + "/styles",
-  dest: __dirname + "/public/styles",
-  debug: true,
-  outputStyle: 'expanded'
-}));
 app.use(cookieParser());
-app.use(express.static("public"));
-app.use(express.static("codemirror"))
+// app.use(lessMiddleware(__dirname + '/stylesheets', [{
+//   debug: true,
+//    dest: (__dirname + "/styles"),
+//    pathRoot: (__dirname, 'public')
+// }]));
+// app.use("/styles", sass({
+//   src: __dirname,
+//   dest: __dirname + "/public/styles",
+//   debug: true,
+//   outputStyle: 'expanded',
+//   includePaths: [ '/node_modules/octicons/',  "/styles" ],
+// }));
 app.use(expressSession({ secret: 'wJWnfa2C7EjSSGpY', resave: false, saveUninitialized: false }));
+app.use(express.static("public"));
 app.use(flash());
 
 app.use(passport.initialize());
@@ -139,10 +145,12 @@ app.get('/currentUser', ensureAuthenticated, function(req, res){
 })
 
 app.get('/codemirror2', ensureAuthenticated, function(req, res){
-  request(JSON.parse(req.user._raw).repos_url), (error, response, body) => {
-    res.render('codemirror2', { user: req.user, resBody: body });
-  }
-  res.render('codemirror', { user: req.user });
+  var assignmentList;
+
+  Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+    assignmentList = e;
+    res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1" });
+  });
 })
 
 app.get('/dashboard/student', ensureAuthenticated, function(req, res){
@@ -161,7 +169,7 @@ app.get('/dashboard/mentor', ensureAuthenticated, function(req, res){
 app.get('/assignments/:id', ensureAuthenticated, function(req, res){
   var submittedAssignmentList;
   var assignmentList;
-// select sa.*,s.first,s.last from submitted_assignments sa inner join students s on studens.id = submitted_assignments.student_id where sa.assignment_id = :id
+
   Submitted_Assignment.findAll({
     attributes: [
       'id',

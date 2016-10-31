@@ -1,92 +1,125 @@
-"use strict"
+var repoURL = repoURL
 
-//Global tree (array of objects)
-var treeMaster = [];
+function loadLESS ( filename ) {
+   // If LESS isn't available, do nothing
+   if ( !window.less ) { return;}
 
-//=== Instatiates treeview after AJAX call ===================================================================
+   // Create LESS link and add to <head>
+   var $link = $("<link type='text/css' rel='stylesheet/less' />");
+   $link.attr("href", filename + ".less");
+   $("head").append( $link );
+
+   // Notify LESS that there is a new stylesheet
+   less.sheets.push( $link[0] );
+   less.refresh();
+}
+
+loadLESS("/stylesheets/file-icons")
+
+//examples url https://api.github.com/repos/DanBrooker/file-icons/git/trees/0f5d7379b0556c0d2e99110e2b6d9012922c9c31
+var treeMaster;
 $(() => {
+  //console.log('fn');
   $.ajax({
     method: "GET",
-    url: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f",
+    url: repoURL,
   }).done((response) => {
-    treeMaster = populateTree(response)
-    console.log(treeMaster)
-      $('#tree').treeview({data: treeMaster, onNodeSelected: treeMaker});
+          treeMaster = populateTree(response)
+          console.log("Treemaster:", treeMaster)
+          $.jstree.defaults.core.data
+          $('#tree')
+            .on('select_node.jstree', function (e, data) {
+              //console.log("Delicious Data!:", data)
+              if (data.node.original.type == "blob") {
+                $.ajax({
+                  method: "GET",
+                  url: data.node.original.url,
+                  headers: {accept: "application/vnd.github.VERSION.raw"}
+                }).done((response) => {
+                  editor.setValue(response)
+                  CodeMirror.modeURL = "../codemirror/mode/%N/%N.js";
+                  var val = data.node.text, m, mode, spec;
+                  if (m = /.+\.([^.]+)$/.exec(val)) {
+                    var info = CodeMirror.findModeByExtension(m[1]);
+                    if (info) {
+                      mode = info.mode;
+                      spec = info.mime;
+                    }
+                  } else if (/\//.test(val)) {
+                    var info = CodeMirror.findModeByMIME(val);
+                    if (info) {
+                      mode = info.mode;
+                      spec = val;
+                    }
+                  } else {
+                    mode = spec = val;
+                  }
+                  if (mode) {
+                    editor.setOption("mode", spec);
+                    CodeMirror.autoLoadMode(editor, mode);
+                    document.getElementById("modeinfo").textContent = spec;
+                  } else {
+                    alert("Could not find a mode corresponding to " + val);
+                  }
+                });
+              } else {
+                //console.log("Oh look, time to do nothing!")
+                return
+              }
+            })
+            .jstree({
+            "core" : {
+              "data" : treeMaster
+            },
+            "plugins": ["theme", "types"]
+          });
+        })
+
+
+    //$('#tree').jstree({ 'core' : { 'data' : JSON.stringify(treeMaster) } });
   })
-})
 
-//=== Conditionally assigns proper onNodeSelected AJAX query ===================================================================
-var treeMaker = function(event, object) {
-    if (object.type == "tree") {
-      $.ajax({
-        method: "GET",
-        url: object.url,
-      }).done((response) => {
-        console.log(object)
-        console.log(treeMaster)
-        treeMaster[object.tags].nodes = populateTree(response)
-        $('#tree').treeview({data: treeMaster, onNodeSelected: treeMaker});
-      })
-    } else if (object.type == "blob") {
-      $.ajax({
-        method: "GET",
-        url: object.url,
-        headers: {accept: "application/vnd.github.VERSION.raw"}
-      }).done((response) => {
-        editor.setValue(response)
-      });
-    }
-  }
-
-//Static tree for testing: https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f
-//=== Converts to appropriate object formatting ===================================================================
 function populateTree(res){
   var tree = res.tree.map((cv, index, arr) => {
-    var object = {};
-      object.text = cv.path,
-      object.sha = cv.sha,
-      object.type = cv.type,
-      object.url = cv.url,
-      object.icon = "glyphicon glyphicon-stop",
-      object.selectedIcon = "glyphicon glyphicon-stop",
-      object.color = "#000000",
-      object.backColor = "#FFFFFF",
-      object.selectable = true,
-      object.state = {
-        checked: true,
-        disabled: false,
-        expanded: false,
-        selected: false
-      },
-      object.tags = index
-      if (object.type == "tree") { object.nodes = [] }
-      //console.log(object)
+    var pathArr = cv.path.split("/");
+    var fileExt = cv.path.split(".")
+    //console.log("File extention: ", fileExt)
+    var object = {
+      "id" : cv.path,
+      "text" : " " + pathArr[pathArr.length - 1],
+      "parent" : parentMaker(pathArr),
+      "type" : cv.type,
+      "url" : cv.url,
+      "icon" : false,
+      "a_attr" : typeMaker(fileExt, cv, pathArr)
+    };
       return object;
     })
+  //console.log("Tree:", tree)
   return tree
   }
 
-//=== Alternative tree function ===================================================================
-//May be more viable, investigate later.
+function typeMaker(fileExt, cv, pathArr){
+  //console.log("typeMaker input: ", fileExt)
+  if (fileExt.length > 1){
+    var attr = {"class" : "icon-file-directory", "data-name": `.${fileExt[fileExt.length - 1]}`}
+    //console.log("ATTR:", attr)
+    return attr
+  } else if (cv.type == "tree"){
+    var attr = {"class" : "icon-file-directory", "data-name": ".folder-open"}
+    //console.log("ATTR:", attr)
+    return attr
+  } else if (cv.type == "blob" && fileExt.length == 1) {
+    var attr = {"class" : "icon-file-directory", "data-name": ".file-text-o"}
+    //console.log("ATTR:", attr)
+    return attr
+  }
+}
 
-// var output = [];
-// for (var i = 0; i < input.length; i++) {
-//     var chain = input[i].text.split("/");
-//     var currentNode = output;
-//     for (var j = 0; j < chain.length; j++) {
-//         var wantedNode = chain[j];
-//         var lastNode = currentNode;
-//         for (var k = 0; k < currentNode.length; k++) {
-//             if (currentNode[k].text == wantedNode) {
-//                 currentNode = currentNode[k].nodes;
-//                 break;
-//             }
-//         }
-//         // If we couldn't find an item in this list of nodes
-//         // that has the right text, create one:
-//         if (lastNode == currentNode) {
-//             var newNode = currentNode[k] = input[i];
-//             currentNode = newNode.nodes;
-//         }
-//     }
-// }
+function parentMaker(splitPath) {
+  if (splitPath.length > 1) {
+    return splitPath.slice(0, -1).join('/')
+  } else {
+    return "#"
+  }
+}

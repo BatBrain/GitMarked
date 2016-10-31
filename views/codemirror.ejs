@@ -1,5 +1,11 @@
-<script src="/scripts/bootstrap-treeview.js"></script>
-<script src="/scripts/tree.js"></script>
+<link rel="stylesheet" href="jstree/dist/themes/default/style.min.css" />
+<script src="jstree/dist/jstree.min.js"></script>
+<script src="scripts/tree.js"></script>
+<link rel="stylesheet" href="/stylesheets/resources/fonts/devicons.css" />
+
+<script>
+        var repoURL = "<%= repoURL %>"
+</script>
 
 <style type="text/css">
       .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
@@ -22,10 +28,12 @@
       	color: silver;
       	cursor: not-allowed;
       }
-    </style>
-<p style="color: gray">Current mode: <span id="modeinfo">text/plain</span></p>
-<p>Filename, mime, or mode name: <input type=text value=foo.js id=mode> <button type=button onclick="change()">change mode</button></p>
-<script type="text/javascript" src="scripts/codemirror.js" delay>
+</style>
 
-</script>
+<br />
+
+<% include sidebar %>
+
+<p style="color: gray">Current mode: <span id="modeinfo">text/plain</span></p>
+<script type="text/javascript" src="scripts/codemirror.js" delay></script>
 <div id="tree"></div>
