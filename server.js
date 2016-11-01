@@ -159,7 +159,6 @@ app.get('/dashboard/student', ensureAuthenticated, function(req, res){
 
 app.get('/dashboard/mentor', ensureAuthenticated, function(req, res){
   var assignmentList;
-
   Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
     assignmentList = e;
     res.render('dashboard-mentor', { user: req.user, assignment: assignmentList });
