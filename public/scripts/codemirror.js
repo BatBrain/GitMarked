@@ -2,12 +2,25 @@
 
 CodeMirror.modeURL = "../codemirror/mode/%N/%N.js";
 let editor = CodeMirror(document.getElementById("editor"), {
+  value: "Please select a file from the treeview in the sidebar to load. =D",
   lineWrapping: true,
   lineNumbers: true,
   showCursorWhenSelecting: true,
-  value: "Blank",
-  mode:  "ruby"
+  gutters: ["CodeMirror-lint-markers"],
+  lint: true,
+  highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
+  matchTags: {bothTags: true},
+  extraKeys: {"Ctrl-J": "toMatchingTag"}
 });
+
+var charWidth = editor.defaultCharWidth(), basePadding = 4;
+editor.on("renderLine", function(cm, line, elt) {
+  var off = CodeMirror.countColumn(line.text, null, cm.getOption("tabSize")) * charWidth;
+  elt.style.textIndent = "-" + off + "px";
+  elt.style.paddingLeft = (basePadding + off) + "px";
+});
+editor.refresh();
+
 $(() => {
   $.ajax({
     method: "GET",
