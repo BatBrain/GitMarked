@@ -1,7 +1,7 @@
 "use strict"
 
 CodeMirror.modeURL = "../codemirror/mode/%N/%N.js";
-let editor = CodeMirror(document.body, {
+let editor = CodeMirror(document.getElementById("editor"), {
   lineWrapping: true,
   lineNumbers: true,
   showCursorWhenSelecting: true,

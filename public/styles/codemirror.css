@@ -1,0 +1,23 @@
+.code-container {
+ float: left;
+ margin-left: 20px;
+ margin-right: 20px;
+}
+
+#editor{
+  width: 900px;
+  height: 579px;
+  background-color: rgba(250, 250, 250, 0.6);
+}
+
+.comment-container {
+  width: 400px;
+  float: left;
+}
+
+.comments {
+  background-color: rgba(250, 250, 250, 0.6);
+  height: 579px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
