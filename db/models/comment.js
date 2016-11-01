@@ -1,6 +1,5 @@
 'use strict';
 
-const Sequelize = require('sequelize');
 const db = require('./connection.js');
 const Submitted_Assignment = require('./submitted_assignment.js');
 
