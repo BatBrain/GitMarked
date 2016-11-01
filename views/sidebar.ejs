@@ -17,7 +17,21 @@
           <ul class="dropdown-menu forAnimate" role="menu">
 
           <% for (var key in assignment) { %>
-            <li><a href="/assignments/<%= assignment[key].id %>"><%= assignment[key].name %></a></li>
+
+            <% if (user.username == 'a-taranenko') { %>
+
+              <li><a href="/mentor/assignments/<%= assignment[key].id %>"><%= assignment[key].name %></a></li>
+
+            <% } else if (user.username == 'BatBrain') { %>
+
+              <li><a href="/student/assignments/<%= assignment[key].id %>"><%= assignment[key].name %></a></li>
+
+            <% } else { %>
+
+              <li><a href="/student/assignments/<%= assignment[key].id %>"><%= assignment[key].name %></a></li>
+
+            <% } %>
+
           <% } %>
 
           </ul>

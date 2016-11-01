@@ -107,9 +107,20 @@ app.get('/auth/github/callback',
   function(req, res) {
     req._parsedUrl.query
 
-// console.log('=====AAAAA=====', req.user, '=====BBBBB=====');
+//console.log('=====AAAAA=====', req.user, '=====BBBBB=====');
+//have access to github_id
+//First Lastname
+//gitnub_username
+//profileURL
 
-    res.redirect('/dashboard/mentor');
+    if (req.user.username == 'a-taranenko') {
+      res.redirect('/dashboard/mentor');
+    } else if (req.user.username == 'BatBrain') {
+      res.redirect('/dashboard/student');
+    } else {
+      res.redirect('/dashboard/student');
+    }
+
 });
 
 
@@ -144,17 +155,53 @@ app.get('/currentUser', ensureAuthenticated, function(req, res){
   res.send(req.user)
 })
 
-app.get('/codemirror2', ensureAuthenticated, function(req, res){
+app.get('/codemirror2/:id', ensureAuthenticated, function(req, res){
   var assignmentList;
+  var submittedAssignmentUrl;
+
+  // Submitted_Assignment.findAll({
+  //   attributes: [
+  //     'id',
+  //     'assignment_url',
+  //     'status',
+  //     'assignment_id',
+  //     'student_id',
+  //     'mentor_id'
+  //     ],
+  //   where: {
+  //     id: req.params.id
+  //   },
+  //   include: [
+  //     { model: Assignment },
+  //     { model: Student },
+  //     { model: Mentor }
+  //     ]
+  //   }).then(function(e) {
+
+  //     console.log('========URL==========>>>', e[0].dataValues.assignment_url, '=========URL=========');
+  //     submittedAssignmentUrl = e[0].dataValues.assignment_url;
+
+  //     Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+  //       assignmentList = e;
+  //       res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: submittedAssignmentUrl });
+  //     });
+
+  //   });
 
   Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
     assignmentList = e;
     res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1" });
   });
+
 })
 
 app.get('/dashboard/student', ensureAuthenticated, function(req, res){
-  res.render('dashboard-student', { user: req.user });
+  var assignmentList;
+
+  Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+    assignmentList = e;
+    res.render('dashboard-student', { user: req.user, assignment: assignmentList });
+  });
 });
 
 app.get('/dashboard/mentor', ensureAuthenticated, function(req, res){
@@ -166,7 +213,7 @@ app.get('/dashboard/mentor', ensureAuthenticated, function(req, res){
   });
 });
 
-app.get('/assignments/:id', ensureAuthenticated, function(req, res){
+app.get('/mentor/assignments/:id', ensureAuthenticated, function(req, res){
   var submittedAssignmentList;
   var assignmentList;
 
@@ -188,7 +235,6 @@ app.get('/assignments/:id', ensureAuthenticated, function(req, res){
       { model: Mentor }
       ]
     }).then(function(e) {
-      console.log('==========', e,'==========');
       submittedAssignmentList = e;
 
       Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
@@ -196,12 +242,72 @@ app.get('/assignments/:id', ensureAuthenticated, function(req, res){
 
         res.render('assignment', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList });
       });
-
-      // res.render('assignment', { user: req.user, submittedAssignment: submittedAssignmentList });
   });
 
 // { model: Assignment,
 //       attributes: [] }
+
+});
+
+app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
+  var submittedAssignmentList;
+  var assignmentList;
+
+  Student.findAll({
+    attributes: [
+      'id',
+      'github_name'
+    ],
+    where: {
+      github_name: req.user.username
+    }
+  }).then(function(e) {
+
+    Submitted_Assignment.findAll({
+      attributes: [
+        'id',
+        'assignment_url',
+        'status',
+        'assignment_id',
+        'student_id',
+        'mentor_id'
+        ],
+      where: {
+        assignment_id: req.params.id,
+        student_id: e[0].dataValues.id
+      },
+      include: [
+        { model: Assignment },
+        { model: Student },
+        { model: Mentor }
+        ]
+      }).then(function(e) {
+        submittedAssignmentList = e;
+
+        Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+          assignmentList = e;
+
+          res.render('assignment-student', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList });
+        });
+    });
+
+  });
+
+  app.post('/dashboard/student', ensureAuthenticated, function(req, res){
+
+    console.log('=====RES=====>>>>>', res, '===END=1===');
+    console.log('=====REQ=====>>>>>', req, '===END=2===');
+
+    res.redirect('/dashboard/student');
+  });
+
+  app.delete('/dashboard/student', ensureAuthenticated, function(req, res){
+
+    console.log('=====RES-DELETE=====>>>>>', res, '===END=1===');
+    console.log('=====REQ-DELETE=====>>>>>', req, '===END=2===');
+
+    res.redirect('/dashboard/student'); //maybe redirect to students/assignments/id?
+  });
 
 });
 
