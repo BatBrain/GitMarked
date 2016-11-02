@@ -347,3 +347,32 @@ function ensureAuthenticated(req, res, next) {
 app.listen(PORT, () => {
   console.log("GitMarked listening on port " + PORT);
 });
+
+
+// File.findAll({
+//   attributes: [
+//     'id',
+//     'comments'
+//   ],
+//   where: {
+//     file_path: "YOUR FILE PATH HERE",
+//     sub_assign_id: "YOUR SUBMITTED ASSIGNMENT ID HERE"
+//   }
+// }).then(function(fileData) {
+//   var myCommentArray = fileData[0].dataValues.comments;
+//   var myFileId = fileData[0].dataValues.id;
+
+//   Comment.findAll({
+//     attributes: [
+//       'title',
+//       'text',
+//       'line_start',
+//       'line_end'
+//     ],
+//     where: {
+//       file_id: myFileId
+//     }
+//   }).then(function(commentData) {
+//     var commentArray = commentData; //to access something use: commentArray.[YOUR INDEX].dataValues.line_start
+//   })
+// })
