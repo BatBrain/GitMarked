@@ -22,7 +22,7 @@ $(() => {
   //console.log('fn');
   $.ajax({
     method: "GET",
-    url: repoURL,
+    url: repoURL.treeURL,
   }).done((response) => {
           treeMaster = populateTree(response)
           console.log("Treemaster:", treeMaster)
@@ -123,3 +123,22 @@ function parentMaker(splitPath) {
     return "#"
   }
 }
+
+//highlightLine(sampleComments)
+
+function colorFind(color){
+  if (color) {
+    return color
+  } else {
+    return "bg-light-yellow"
+  }
+}
+
+function highlightLine(comments) {
+  comments.forEach((cv, index) => {
+    let start = cv.start - 1;
+    for (var i = start; i < cv.end; i++){
+      editor.addLineClass(i, 'wrap', colorFind(cv.color));
+    }
+  })
+};

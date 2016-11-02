@@ -6,17 +6,19 @@ let editor = CodeMirror(document.getElementById("editor"), {
   lineNumbers: true,
   showCursorWhenSelecting: true,
   value: "Blank",
-  mode:  "ruby"
+  mode:  "text"
 });
-$(() => {
-  $.ajax({
-    method: "GET",
-    url: "https://raw.githubusercontent.com/BatBrain/ar-excercises/711d67306bb5d11a1018e09fb33a2249c81355a8/exercises/exercise_5.rb",
-  }).done((response) => {
-    editor.setValue(response)
-    highlightLine(sampleComments)
-  });
-});
+// $(() => {
+//   $.ajax({
+//     method: "GET",
+//     url: "https://raw.githubusercontent.com/BatBrain/ar-excercises/711d67306bb5d11a1018e09fb33a2249c81355a8/exercises/exercise_5.rb",
+//   }).done((response) => {
+//     editor.setValue(response)
+//
+//   });
+// });
+
+//highlightLine(sampleComments)
 
 function colorFind(color){
   if (color) {

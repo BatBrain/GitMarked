@@ -43,7 +43,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(obj, done) {
-  console.log(obj)
+  //console.log(obj)
   done(null, obj);
 });
 
@@ -55,7 +55,7 @@ passport.use(new GitHubStrategy({
   function(accessToken, refreshToken, profile, done) {
     log("GitHub returned something! Huzzah!");
     log("accessToken:");
-    console.log(accessToken);
+    //console.log(accessToken);
     log("profile: ", profile);
     process.nextTick(function () {
       return done(null, profile);
@@ -154,40 +154,37 @@ app.get('/codemirror2/:id', ensureAuthenticated, function(req, res){
   var assignmentList;
   var submittedAssignmentUrl;
 
-  // Submitted_Assignment.findAll({
-  //   attributes: [
-  //     'id',
-  //     'assignment_url',
-  //     'status',
-  //     'assignment_id',
-  //     'student_id',
-  //     'mentor_id'
-  //     ],
-  //   where: {
-  //     id: req.params.id
-  //   },
-  //   include: [
-  //     { model: Assignment },
-  //     { model: Student },
-  //     { model: Mentor }
-  //     ]
-  //   }).then(function(e) {
-
-  //     console.log('========URL==========>>>', e[0].dataValues.assignment_url, '=========URL=========');
-  //     submittedAssignmentUrl = e[0].dataValues.assignment_url;
-
-  //     Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
-  //       assignmentList = e;
-  //       res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: submittedAssignmentUrl });
-  //     });
-
-  //   });
-
-  Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
-    assignmentList = e;
-    res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1" });
+  Submitted_Assignment.findAll({
+    attributes: [
+      'id',
+      'assignment_url',
+      'status',
+      'assignment_id',
+      'student_id',
+      'mentor_id'
+      ],
+    where: {
+      id: req.params.id
+    },
+    include: [
+      { model: Assignment },
+      { model: Student },
+      { model: Mentor }
+      ]
+    })
+    .then(function(e) {
+      console.log('========URL==========>>>', e[0].dataValues.assignment_url, '=========URL=========');
+      submittedAssignmentUrl = e[0].dataValues.assignment_url;
+      Assignment.findAll({ attributes: ['id', 'name', 'description'] })
+    .then(function(e) {
+      assignmentList = e;
+      res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: JSON.stringify(makeFetchUrl(submittedAssignmentUrl)) });
+    });
   });
-
+  // Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+  //   assignmentList = e;
+  //   res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1" });
+  // });
 })
 
 app.get('/dashboard/student', ensureAuthenticated, function(req, res){
@@ -228,19 +225,17 @@ app.get('/mentor/assignments/:id', ensureAuthenticated, function(req, res){
       { model: Student },
       { model: Mentor }
       ]
-    }).then(function(e) {
+    })
+    .then(function(e) {
       submittedAssignmentList = e;
-
-      Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+      Assignment.findAll({ attributes: ['id', 'name', 'description'] })
+    .then(function(e) {
         assignmentList = e;
-
         res.render('assignment', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList });
-      });
+    });
   });
-
 // { model: Assignment,
 //       attributes: [] }
-
 });
 
 app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
@@ -337,7 +332,7 @@ function ensureAuthenticated(req, res, next) {
     console.log("User Authenticated")
     return next()
   } else {
-    res.redirect('/login')
+    res.redirect('/')
   }
 }
 
@@ -349,6 +344,19 @@ app.listen(PORT, () => {
 });
 
 
+
+function makeFetchUrl(submittedURL){
+  let sliced = submittedURL.replace("https://github.com/", "").split("/").slice(0,2)
+  let username = sliced[0]
+  let reponame = sliced[1]
+  let resultObj = {
+    username: username,
+    reponame: reponame,
+    treeURL: `https://api.github.com/repos/${username}/${reponame}/git/trees/master?recursive=1`
+  }
+  console.log(resultObj)
+  return resultObj
+}
 // File.findAll({
 //   attributes: [
 //     'id',
