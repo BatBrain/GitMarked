@@ -22,7 +22,7 @@ body,html{
       float: right;
     }
 
-    nav.sidebar:hover + .main{
+    nav.sidebar:hover + .main {
       margin-left: 200px;
     }
 

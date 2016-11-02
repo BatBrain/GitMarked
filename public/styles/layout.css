@@ -1,9 +1,19 @@
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+}
+
 body {
   background-color: #EEE;
   background-image: url("/images/GitMarked-background.png");
-  background-size: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
   background-repeat: no-repeat;
-  font-family: 'Titillium Web', sans-serif;
+  /*font-family: 'Titillium Web', sans-serif;*/
 }
 
 body h1 {

@@ -26,6 +26,8 @@ const Student               = require('./db/models/student');
 const Mentor                = require('./db/models/mentor');
 const Assignment            = require('./db/models/assignment');
 const Submitted_Assignment  = require('./db/models/submitted_assignment');
+const Comment               = require('./db/models/comment');
+const File                  = require('./db/models/file');
 
 const GITHUB_CLIENT_ID      = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET  = process.env.GITHUB_CLIENT_SECRET
@@ -106,23 +108,16 @@ app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     req._parsedUrl.query
-
-//console.log('=====AAAAA=====', req.user, '=====BBBBB=====');
-//have access to github_id
-//First Lastname
-//gitnub_username
-//profileURL
-
     if (req.user.username == 'a-taranenko') {
       res.redirect('/dashboard/mentor');
     } else if (req.user.username == 'BatBrain') {
-      res.redirect('/dashboard/student');
+      res.redirect('/dashboard/mentor');
     } else if (req.user.username == 'FrankyTest') {
       res.redirect('/dashboard/student');
+    } else {
+      res.redirect('/dashboard/student');
     }
-
 });
-
 
 //=== ROUTES ===================================================================
 

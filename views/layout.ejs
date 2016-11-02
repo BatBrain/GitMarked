@@ -44,17 +44,19 @@
 
 	</head>
 
-	<body style="font-family:'Titillium Web', sans-serif;">
+	<body>
 
-		<div class="navigation-bar">
-			<div class="nav-logo">
-				<img src="/images/free_logo_10_white-1.svg" width="160" height="90">
-			</div>
-			<div class="gitmarked-logo-name">GitMarked</div>
-			<div class="nav-logout"><a href="/logout" class="logout">Log Out</a></div>
-			<p class="nav-name"><%= user.displayName %> (<%= user.username %>)</p>
-		</div>
+				<div class="navigation-bar" style="font-family:'Titillium Web', sans-serif;">
+					<div class="nav-logo">
+						<img src="/images/free_logo_10_white-1.svg" width="160" height="90">
+					</div>
+					<div class="gitmarked-logo-name">GitMarked</div>
+					<div class="nav-logout"><a href="/logout" class="logout">Log Out</a></div>
+					<p class="nav-name"><%= user.displayName %> (<%= user.username %>)</p>
+				</div>
 
-		<%- body %>
+<% include sidebar %>
+
+				<%- body %>
 	</body>
 </html>
