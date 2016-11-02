@@ -3,6 +3,7 @@
 const Sequelize = require('sequelize');
 const db = require('./connection.js');
 const Submitted_Assignment = require('./submitted_assignment.js');
+const File = require('./file.js');
 
 const Comment = db.define('Comment', {
   title: Sequelize.STRING,
