@@ -26,13 +26,18 @@
               <tr class="clickable-row row-highlight" data-href="/codemirror2/<%= submittedAssignment[key].id %>">
                 <th scope="row"><%= submittedAssignment[key].id %></th>
                 <td><%= submittedAssignment[key].Student.first_name %> <%= submittedAssignment[key].Student.last_name %>
-                  <div class="pull-right">
-                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">
-                      <span class="glypicon glyphicon glyphicon-pencil"></span>
-                    </button>
-                  </div>
                 </td>
-                <td><%= submittedAssignment[key].Mentor.first_name %></td>
+                <% if (submittedAssignment[key].mentor_id == null) { %>
+                  <td>No Mentor
+                    <div class="pull-right">
+                      <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">
+                        <span class="glypicon glyphicon glyphicon-pencil"></span>
+                      </button>
+                    </div>
+                  </td>
+                <% } else { %>
+                  <td><%= submittedAssignment[key].Mentor.first_name %></td>
+                <% } %>
                 <td><%= submittedAssignment[key].status %></td>
               </tr>
 

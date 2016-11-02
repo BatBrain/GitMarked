@@ -23,5 +23,6 @@ const Comment = db.define('Comment', {
 // };
 
 Comment.belongsTo(Submitted_Assignment, { foreignKey: {name: 'sub_assign_id'} });
+Comment.belongsTo(File, { foreignKey: {name: 'file_id'} });
 
 module.exports = Comment;

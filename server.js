@@ -117,7 +117,7 @@ app.get('/auth/github/callback',
       res.redirect('/dashboard/mentor');
     } else if (req.user.username == 'BatBrain') {
       res.redirect('/dashboard/student');
-    } else {
+    } else if (req.user.username == 'FrankyTest') {
       res.redirect('/dashboard/student');
     }
 
@@ -286,7 +286,7 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
         Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
           assignmentList = e;
 
-          res.render('assignment-student', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList });
+          res.render('assignment-student', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList, repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1" });
         });
     });
 

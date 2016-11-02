@@ -1,25 +1,10 @@
-<br />
+<% if (!submittedAssignment[0]) { %>
 
-<% include sidebar %>
+  <br />
 
-<h1 class="page-header" style="margin-top:0px;">ASSIGNMENT: <%= submittedAssignment[0].Assignment.name %></h1>
+  <% include sidebar %>
 
-<% if (submittedAssignment[0].status == 'Marked') { %>
-
-
-
-<% } else if (submittedAssignment[0].status == 'Submitted') { %>
-
-  <div>
-    <form method="POST" action="/dashboard/student/?_method=DELETE">
-      <label>Assignment pending...</label>
-      <button type="submit">Resubmit</button>
-    </form>
-  </div>
-
-<% } else { %>
-
-  <div>
+  <div class="student-container">
     <form method="POST" action="/dashboard/student/?_method=POST">
       <label>GitHub URL:</label>
       <input type="text" name="github-url" value="" size=40></>
@@ -27,4 +12,27 @@
     </form>
   </div>
 
+<% } else { %>
+
+  <% if (submittedAssignment[0].status == 'Marked') { %>
+
+    <% include codemirror %>
+
+  <% } else if (submittedAssignment[0].status == 'Submitted') { %>
+    <br />
+
+    <% include sidebar %>
+
+    <div class="student-container">
+      <form method="POST" action="/dashboard/student/?_method=DELETE">
+        <label>Assignment pending...</label>
+        <button type="submit">Resubmit</button>
+      </form>
+    </div>
+  <% } %>
+
 <% } %>
+
+
+
+

@@ -14,7 +14,7 @@ module.exports = {
     */
     return queryInterface.bulkInsert('Submitted_Assignments', [{
         assignment_url: 'https://github.com/BatBrain/week2/tree/master/week2day1',
-        status: 'Submitted',
+        status: 'Marked',
         createdAt: new Date(),
         updatedAt: new Date(),
         assignment_id: 13,
@@ -22,7 +22,7 @@ module.exports = {
         mentor_id: 8
       }, {
         assignment_url: 'https://github.com/m-sundin/avatar-d',
-        status: 'Submitted',
+        status: 'Marked',
         createdAt: new Date(),
         updatedAt: new Date(),
         assignment_id: 13,
@@ -30,12 +30,36 @@ module.exports = {
         mentor_id: 8
       }, {
         assignment_url: 'https://github.com/c-joseph/avatar-downloader',
-        status: 'Submitted',
+        status: 'Marked',
         createdAt: new Date(),
         updatedAt: new Date(),
         assignment_id: 13,
         student_id: 13,
         mentor_id: 8
+      }, {
+        assignment_url: 'https://github.com/BatBrain/tinyapp',
+        status: 'Submitted',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        assignment_id: 14,
+        student_id: 11,
+        mentor_id: null
+      }, {
+        assignment_url: 'https://github.com/m-sundin/tiny-app',
+        status: 'Submitted',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        assignment_id: 14,
+        student_id: 12,
+        mentor_id: null
+      }, {
+        assignment_url: 'https://github.com/c-joseph/tiny-app',
+        status: 'Submitted',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        assignment_id: 14,
+        student_id: 13,
+        mentor_id: null
       }]
     );
   },
