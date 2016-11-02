@@ -1,0 +1,29 @@
+.student-container {
+  margin-top: 150px;
+  font-size: 150%;
+}
+
+.a-student-label {
+  font-size: 150%;
+}
+
+.a-student-button {
+  color: black;
+  padding: 5px 10px;
+  background-color: white;
+  border: none;
+}
+
+.a-student-button:hover {
+  color: white;
+  background-color: black;
+  border: none;
+}
+
+.submit-button {
+  margin-top: 16px;
+}
+
+.github-url-input {
+  color: black;
+}

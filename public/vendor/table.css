@@ -99,6 +99,10 @@ thead {
   vertical-align: middle;
 }
 
+.row-highlight {
+  color: black;
+}
+
 .row-highlight:hover {
   opacity: 0.5;
   background-color: black;

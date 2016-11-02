@@ -21,6 +21,7 @@
 		<link rel="stylesheet" href="/vendor/jstreestyle.min.css" />
 
 		<link rel="stylesheet" href="/styles/codemirror.css" type="text/css" />
+		<link rel="stylesheet" href="/styles/assignment-student.css" type="text/css" />
 
 		<%# CODEMIRROR %>
 		<script src="/codemirror/lib/codemirror.js"></script>
@@ -40,23 +41,25 @@
 		<script type="text/javascript" src="/scripts/app.js" defer></script>
 		<link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,400i,700,700i" rel="stylesheet">
 		<script type="text/javascript" src="/scripts/table-click.js"></script>
-		<script type="text/javascript" src="/scripts/comment-hide.js"></script>
+		<!-- <script type="text/javascript" src="/scripts/comment-hide.js"></script> -->
 
 	</head>
 
-	<body>
+	<body style="font-family:'Titillium Web', sans-serif;color: white;">
 
-				<div class="navigation-bar" style="font-family:'Titillium Web', sans-serif;">
-					<div class="nav-logo">
-						<img src="/images/free_logo_10_white-1.svg" width="160" height="90">
-					</div>
-					<div class="gitmarked-logo-name">GitMarked</div>
-					<div class="nav-logout"><a href="/logout" class="logout">Log Out</a></div>
-					<p class="nav-name"><%= user.displayName %> (<%= user.username %>)</p>
-				</div>
+		<div class="navigation-bar">
+			<div class="nav-logo">
+				<img src="/images/free_logo_10_white-1.svg" width="160" height="90">
+			</div>
+			<div class="gitmarked-logo-name">GitMarked</div>
+			<div class="nav-logout"><a href="/logout" class="logout">Log Out</a></div>
+			<p class="nav-name"><%= user.displayName %> (<%= user.username %>)</p>
+		</div>
 
-<% include sidebar %>
+		<br />
 
-				<%- body %>
+		<% include sidebar %>
+
+		<%- body %>
 	</body>
 </html>

@@ -72,7 +72,7 @@ app.set("view engine", "ejs");
 app.use(partial());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(methodOverride());
+app.use(methodOverride("_method"));
 app.use(cookieParser());
 // app.use(lessMiddleware(__dirname + '/stylesheets', [{
 //   debug: true,
@@ -256,6 +256,7 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
       github_name: req.user.username
     }
   }).then(function(e) {
+    var studentIdentification = e[0].dataValues.id
 
     Submitted_Assignment.findAll({
       attributes: [
@@ -268,7 +269,7 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
         ],
       where: {
         assignment_id: req.params.id,
-        student_id: e[0].dataValues.id
+        student_id: studentIdentification
       },
       include: [
         { model: Assignment },
@@ -281,7 +282,13 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
         Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
           assignmentList = e;
 
-          res.render('assignment-student', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList, repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1" });
+          res.render('assignment-student', {
+            user: req.user,
+            assignment: assignmentList,
+            submittedAssignment: submittedAssignmentList,
+            repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1",
+            assignmentId: req.params.id,
+            userId: studentIdentification });
         });
     });
 
@@ -289,16 +296,33 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
 
   app.post('/dashboard/student', ensureAuthenticated, function(req, res){
 
-    console.log('=====RES=====>>>>>', res, '===END=1===');
-    console.log('=====REQ=====>>>>>', req, '===END=2===');
+    console.log('=====REQ-PARAMS-POST=====>>>>>', req.body, '===END=1===');
+
+    // Submitted_Assignment.bulkCreate([
+    //   { assignment_url: req.body.github-url,
+    //     status: 'Submitted',
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //     assignment_id: req.body.assignment-id,
+    //     student_id: user-id}
+    // ]).then(function() {
+    //   return Submitted_Assignment;
+    // })
 
     res.redirect('/dashboard/student');
   });
 
-  app.delete('/dashboard/student', ensureAuthenticated, function(req, res){
+  app.delete('/dashboard/student/:id', ensureAuthenticated, function(req, res){
 
-    console.log('=====RES-DELETE=====>>>>>', res, '===END=1===');
-    console.log('=====REQ-DELETE=====>>>>>', req, '===END=2===');
+    console.log('=====REQ-PARAMS-DELETE=====>>>>>', req.params.id, '===END=2===');
+
+    // Submitted_Assignment.destroy({
+    //   where: {
+    //     id: req.params.id
+    //   }
+    // }).then(function() {
+    //   return Submitted_Assignment;
+    // })
 
     res.redirect('/dashboard/student'); //maybe redirect to students/assignments/id?
   });

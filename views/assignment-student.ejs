@@ -1,14 +1,12 @@
 <% if (!submittedAssignment[0]) { %>
 
-  <br />
-
-  <% include sidebar %>
-
-  <div class="student-container">
+  <div class="student-container text-center">
     <form method="POST" action="/dashboard/student/?_method=POST">
-      <label>GitHub URL:</label>
-      <input type="text" name="github-url" value="" size=40></>
-      <button type="submit">Submit</button>
+      <label class="a-student-label">GitHub URL:</label><br />
+      <input type="text" name="github-url" value="" size=40 class="github-url-input">
+      <input type="hidden" name="assignment-id" value="<%= assignmentId %>">
+      <input type="hidden" name="user-id" value="<%= userId %>"><br />
+      <button type="submit" class="a-student-button submit-button">Submit</button>
     </form>
   </div>
 
@@ -19,20 +17,14 @@
     <% include codemirror %>
 
   <% } else if (submittedAssignment[0].status == 'Submitted') { %>
-    <br />
 
-    <% include sidebar %>
-
-    <div class="student-container">
-      <form method="POST" action="/dashboard/student/?_method=DELETE">
-        <label>Assignment pending...</label>
-        <button type="submit">Resubmit</button>
+    <div class="student-container text-center">
+      <form method="POST" action="/dashboard/student/<%= submittedAssignment[0].id %>?_method=DELETE">
+        <label class="a-student-label">Assignment pending...</label><br />
+        <button type="submit" class="a-student-button">Resubmit</button>
       </form>
     </div>
+
   <% } %>
 
 <% } %>
-
-
-
-
