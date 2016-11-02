@@ -1,13 +1,15 @@
-<nav class="navbar navbar-default sidebar" role="navigation" style="background-color:rgba(255,255,255,0.6);border: 1px solid black;">
+
+
+<nav class="navbar navbar-default sidebar" role="navigation" style=" height: 80.8%; border-radius: 8px; background-color:rgba(255,255,255,0.6);border: 1px solid black;">
   <div class="container-fluid">
-<!--     <div class="navbar-header">
+   <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-    </div> -->
+    </div>
 
     <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
       <ul class="nav navbar-nav">
@@ -24,7 +26,7 @@
 
             <% } else if (user.username == 'BatBrain') { %>
 
-              <li><a href="/student/assignments/<%= assignment[key].id %>"><%= assignment[key].name %></a></li>
+              <li><a href="/mentor/assignments/<%= assignment[key].id %>"><%= assignment[key].name %></a></li>
 
             <% } else { %>
 

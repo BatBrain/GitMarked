@@ -106,23 +106,14 @@ app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     req._parsedUrl.query
-
-//console.log('=====AAAAA=====', req.user, '=====BBBBB=====');
-//have access to github_id
-//First Lastname
-//gitnub_username
-//profileURL
-
     if (req.user.username == 'a-taranenko') {
       res.redirect('/dashboard/mentor');
     } else if (req.user.username == 'BatBrain') {
-      res.redirect('/dashboard/student');
+      res.redirect('/dashboard/mentor');
     } else {
       res.redirect('/dashboard/student');
     }
-
 });
-
 
 //=== ROUTES ===================================================================
 
