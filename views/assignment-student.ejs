@@ -1,7 +1,5 @@
 <script type="text/javascript">
-  if (submittedAssignment[0]) {
-    var submittedID = <%- submittedAssignment[0].dataValues.id %>
-  }
+  var submittedID = <%- submittedAssignment[0].dataValues.id %>
 </script>
 
 <% if (!submittedAssignment[0]) { %>
