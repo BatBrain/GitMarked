@@ -192,7 +192,7 @@ app.get('/dashboard/student', ensureAuthenticated, function(req, res){
 
   Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
     assignmentList = e;
-    res.render('dashboard-student', { user: req.user, assignment: assignmentList });
+    res.render('dashboard-student', { user: req.user, assignment: assignmentList, repoURL: undefined });
   });
 });
 
@@ -200,7 +200,7 @@ app.get('/dashboard/mentor', ensureAuthenticated, function(req, res){
   var assignmentList;
   Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
     assignmentList = e;
-    res.render('dashboard-mentor', { user: req.user, assignment: assignmentList });
+    res.render('dashboard-mentor', { user: req.user, assignment: assignmentList, repoURL: undefined });
   });
 });
 
@@ -231,7 +231,7 @@ app.get('/mentor/assignments/:id', ensureAuthenticated, function(req, res){
       Assignment.findAll({ attributes: ['id', 'name', 'description'] })
     .then(function(e) {
         assignmentList = e;
-        res.render('assignment', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList });
+        res.render('assignment', { user: req.user, assignment: assignmentList, submittedAssignment: submittedAssignmentList, repoURL: undefined });
     });
   });
 // { model: Assignment,
@@ -241,6 +241,8 @@ app.get('/mentor/assignments/:id', ensureAuthenticated, function(req, res){
 app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
   var submittedAssignmentList;
   var assignmentList;
+  var submittedAssignmentUrl;
+  var repoURLContainer;
 
   Student.findAll({
     attributes: [
@@ -250,7 +252,8 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
     where: {
       github_name: req.user.username
     }
-  }).then(function(e) {
+  })
+  .then(function(e) {
     var studentIdentification = e[0].dataValues.id
 
     Submitted_Assignment.findAll({
@@ -271,58 +274,68 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
         { model: Student },
         { model: Mentor }
         ]
-      }).then(function(e) {
+      })
+      .then(function(e) {
         submittedAssignmentList = e;
 
-        Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
+        if (e[0]) {
+          submittedAssignmentUrl = e[0].dataValues.assignment_url;
+        } else {
+          submittedAssignmentUrl = undefined;
+        }
+
+        Assignment.findAll({ attributes: ['id', 'name', 'description'] })
+        .then(function(e) {
           assignmentList = e;
+
+          if (submittedAssignmentUrl) {
+            repoURLContainer = JSON.stringify(makeFetchUrl(submittedAssignmentUrl));
+          } else {
+            repoURLContainer = undefined;
+          }
 
           res.render('assignment-student', {
             user: req.user,
             assignment: assignmentList,
             submittedAssignment: submittedAssignmentList,
-            repoURL: "https://api.github.com/repos/BatBrain/ar-excercises/git/trees/aef6baccc89b2a11545438510c379b6034aa189f?recursive=1",
+            repoURL: repoURLContainer,
             assignmentId: req.params.id,
-            userId: studentIdentification });
-        });
-    });
+            userId: studentIdentification })
+        })
+      })
+})
 
-  });
+app.post('/dashboard/student', ensureAuthenticated, function(req, res){
 
-  app.post('/dashboard/student', ensureAuthenticated, function(req, res){
+  console.log('=====REQ-PARAMS-POST=====>>>>>', req.body, '===END=1===');
 
-    console.log('=====REQ-PARAMS-POST=====>>>>>', req.body, '===END=1===');
-
-    // Submitted_Assignment.bulkCreate([
-    //   { assignment_url: req.body.github-url,
-    //     status: 'Submitted',
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //     assignment_id: req.body.assignment-id,
-    //     student_id: user-id}
-    // ]).then(function() {
-    //   return Submitted_Assignment;
-    // })
-
+  Submitted_Assignment.bulkCreate([
+    { assignment_url: req.body.github_url,
+      status: 'Submitted',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      assignment_id: req.body.assignment_id,
+      student_id: req.body.user_id}
+    ])
+  .then(function() {
     res.redirect('/dashboard/student');
-  });
-
-  app.delete('/dashboard/student/:id', ensureAuthenticated, function(req, res){
-
-    console.log('=====REQ-PARAMS-DELETE=====>>>>>', req.params.id, '===END=2===');
-
-    // Submitted_Assignment.destroy({
-    //   where: {
-    //     id: req.params.id
-    //   }
-    // }).then(function() {
-    //   return Submitted_Assignment;
-    // })
-
-    res.redirect('/dashboard/student'); //maybe redirect to students/assignments/id?
-  });
-
+  })
 });
+
+app.delete('/dashboard/student/:id', ensureAuthenticated, function(req, res){
+
+  console.log('=====REQ-PARAMS-DELETE=====>>>>>', req.params.id, '===END=2===');
+
+  Submitted_Assignment.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+  .then(function() {
+    res.redirect('/dashboard/student');
+  })
+})
+})
 
 
 //=== MW Functions ===================================================================
@@ -344,7 +357,6 @@ app.listen(PORT, () => {
 });
 
 
-
 function makeFetchUrl(submittedURL){
   let sliced = submittedURL.replace("https://github.com/", "").split("/").slice(0,2)
   let username = sliced[0]
@@ -352,7 +364,8 @@ function makeFetchUrl(submittedURL){
   let resultObj = {
     username: username,
     reponame: reponame,
-    treeURL: `https://api.github.com/repos/${username}/${reponame}/git/trees/master?recursive=1`
+    treeURL: `https://api.github.com/repos/${username}/${reponame}/git/trees/master?recursive=1`,
+    sourceURL: submittedURL
   }
   console.log(resultObj)
   return resultObj
@@ -384,3 +397,46 @@ function makeFetchUrl(submittedURL){
 //     var commentArray = commentData; //to access something use: commentArray.[YOUR INDEX].dataValues.line_start
 //   })
 // })
+
+// Submitted_Assignment.findAll({
+//   attributes: [
+//     'status'
+//   ],
+//   where: {
+//     id: 'GIVE_THE_ID_HERE'
+//   }
+// })
+// .then(function(subAssignData) {
+//   if (subAssignData[0].dataValues.status == 'Submitted') {
+//     Submitted_Assignment.updateAttributes({
+//       status: 'Marked'
+//     })
+//   }
+
+//   File.findOrCreate({
+//     file_path: 'GIVE_THE_FILE_PATH_HERE',
+//     sub_assign_id: 'GIVE_THE_SUB_ASSIGN_ID_HERE'
+//   })
+//   .then(function(row, trueOrFalse) {
+//     Comment.bulkCreate([
+//       {
+//         title: '',
+//         text: '',
+//         type: '',
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//         sub_assign_id: '',
+//         line_start: ,
+//         line_end: ,
+//         file_id:
+//       }
+//     ])
+//     .then(function() {
+//       res.render()
+//     })
+//   })
+// })
+
+
+
+
