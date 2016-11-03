@@ -50,7 +50,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:8080/auth/github/callback",
+    callbackURL: "http://99.254.129.78:8080/auth/github/callback",
   },
   function(accessToken, refreshToken, profile, done) {
     log("GitHub returned something! Huzzah!");
