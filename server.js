@@ -153,6 +153,7 @@ app.get('/currentUser', ensureAuthenticated, function(req, res){
 app.get('/codemirror2/:id', ensureAuthenticated, function(req, res){
   var assignmentList;
   var submittedAssignmentUrl;
+  var submittedAssignmentID;
 
   Submitted_Assignment.findAll({
     attributes: [
@@ -175,10 +176,19 @@ app.get('/codemirror2/:id', ensureAuthenticated, function(req, res){
     .then(function(e) {
       console.log('========URL==========>>>', e[0].dataValues.assignment_url, '=========URL=========');
       submittedAssignmentUrl = e[0].dataValues.assignment_url;
+      submittedAssignmentID = e[0].dataValues.id;
       Assignment.findAll({ attributes: ['id', 'name', 'description'] })
     .then(function(e) {
       assignmentList = e;
-      res.render('codemirror', { user: req.user, assignment: assignmentList, repoURL: JSON.stringify(makeFetchUrl(submittedAssignmentUrl)) });
+      if (req.user.username == 'a-taranenko') {
+        res.render('codemirror-mentor', { user: req.user, sub_id: submittedAssignmentID, assignment: assignmentList, repoURL: JSON.stringify(makeFetchUrl(submittedAssignmentUrl)) });
+      } else if (req.user.username == 'BatBrain') {
+        res.render('codemirror-mentor', { user: req.user, sub_id: submittedAssignmentID, assignment: assignmentList, repoURL: JSON.stringify(makeFetchUrl(submittedAssignmentUrl)) });
+      } else if (req.user.username == 'FrankyTest') {
+        res.render('codemirror', { user: req.user, sub_id: submittedAssignmentID, assignment: assignmentList, repoURL: JSON.stringify(makeFetchUrl(submittedAssignmentUrl)) });
+      } else {
+        res.render('codemirror', { user: req.user, sub_id: submittedAssignmentID, assignment: assignmentList, repoURL: JSON.stringify(makeFetchUrl(submittedAssignmentUrl)) });
+      }
     });
   });
   // Assignment.findAll({ attributes: ['id', 'name', 'description'] }).then(function(e) {
@@ -324,7 +334,37 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
 
 });
 
+app.get ('/find/filecomments', ensureAuthenticated, function(req, res) {
+  File.findAll({
+    attributes: [
+      'id',
+      'comments'
+    ],
+    where: {
+      file_path: req.query.path,
+      sub_assign_id: req.query.id
+    }
+  }).then(function(fileData) {
+    var myCommentArray = fileData[0].dataValues.comments;
+    var myFileId = fileData[0].dataValues.id;
 
+    Comment.findAll({
+      attributes: [
+        'title',
+        'text',
+        'line_start',
+        'line_end',
+        'type'
+      ],
+      where: {
+        file_id: myFileId
+      }
+    }).then(function(commentData) {
+      var commentArray = commentData; //to access something use: commentArray[YOUR INDEX].dataValues.line_start
+      res.send(commentArray)
+    })
+  })
+})
 //=== MW Functions ===================================================================
 
 function ensureAuthenticated(req, res, next) {
@@ -357,30 +397,3 @@ function makeFetchUrl(submittedURL){
   console.log(resultObj)
   return resultObj
 }
-// File.findAll({
-//   attributes: [
-//     'id',
-//     'comments'
-//   ],
-//   where: {
-//     file_path: "YOUR FILE PATH HERE",
-//     sub_assign_id: "YOUR SUBMITTED ASSIGNMENT ID HERE"
-//   }
-// }).then(function(fileData) {
-//   var myCommentArray = fileData[0].dataValues.comments;
-//   var myFileId = fileData[0].dataValues.id;
-
-//   Comment.findAll({
-//     attributes: [
-//       'title',
-//       'text',
-//       'line_start',
-//       'line_end'
-//     ],
-//     where: {
-//       file_id: myFileId
-//     }
-//   }).then(function(commentData) {
-//     var commentArray = commentData; //to access something use: commentArray.[YOUR INDEX].dataValues.line_start
-//   })
-// })
