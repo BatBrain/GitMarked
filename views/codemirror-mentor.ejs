@@ -1,23 +1,12 @@
 <link rel="stylesheet" href="/jstree/dist/themes/default/style.min.css" />
 <script src="/jstree/dist/jstree.min.js"></script>
-<script src="/scripts/tree.js"></script>
+<script src="/scripts/tree-mentor.js"></script>
 <link rel="stylesheet" href="/stylesheets/resources/fonts/devicons.css" />
 
 <script>
         var subID = <%- sub_id %>
         var repoURL = <%- repoURL %>
-        jQuery(document).ready(function($) {
 
-    var hash        = window.location.hash, // Hash from the url
-    accordionGroup  = $('.panel.list-group'), // List groups
-    accordionExists = accordionGroup.length;
-
-    // If url fragment and accordion both exist...
-    if(hash && accordionExists) {
-      // Find the button sibling of the anchor and click it
-      accordionGroup.find(hash).siblings('button.list-group-item').click();
-    }
-});
 </script>
 
 <style type="text/css">
@@ -77,16 +66,14 @@
 </div>
 <div class="code-container">
   <div class="comment-container">
-    <article class="comments">
-      <ul id="comment-list">
+    <article class="comments" id="comments">
 
-      </ul>
     </article>
 
+
   </div>
-  <%# <h1 class="page-header" style="margin-top:0px;">CODE</h1>%>
   <article id="editor"></article>
 </div>
 
 
-<script type="text/javascript" src="/scripts/codemirror.js" delay></script>
+<script type="text/javascript" src="/scripts/codemirror.js"></script>

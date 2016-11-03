@@ -1,5 +1,6 @@
 var repoURL = repoURL
 var subID = subID
+var currentFilePath;
 
 function loadLESS ( filename ) {
    // If LESS isn't available, do nothing
@@ -31,6 +32,7 @@ $(() => {
           $('#tree')
             .on('select_node.jstree', function (e, data) {
               //console.log("Delicious Data!:", data)
+              currentFilePath = data.node.original.id
               if (data.node.original.type == "blob") {
                 $.ajax({
                   method: "GET",
@@ -67,7 +69,6 @@ $(() => {
                 //console.log("Oh look, time to do nothing!")
                 return
               }
-              getComments(data.node.original)
             })
             .jstree({
             "core" : {
@@ -172,3 +173,79 @@ function getComments(eventObject){
     highlightLine(response)
   })
 }
+
+$( document ).ready(function(){
+  $("#comments").append(stupidCommentForm)
+  $("#addNewComment").on("submit", function(event, data){
+    debugger
+    let selection = editor.listSelections()[0]
+    let postData = {
+      subID: subID,
+      path: currentFilePath,
+      line_start: selection.anchor.line + 1,
+      line_end: selection.head.line + 1,
+      text: this[0].value,
+      title: this[1].value,
+      type: this[2].value,
+      success: function(){},
+    }
+    event.preventDefault()
+    $.ajax({
+      type: "POST",
+      url: "/addNewComment",
+      data: postData
+    })
+    .then( function(data, status, code){
+      debugger
+      return data
+      $("#addNewComment").submit()
+    }, function(code, status, error){
+      alert("Issue with creating a function: ", code, status, error)
+    })
+  })
+})
+
+let stupidCommentForm = `<form id="addNewComment" style="padding-left: 5%;">
+<legend>Add Comment</legend>
+<label for="comment-text">Comment Text</label>
+<div>
+  <textarea id="comment-text" name="comment-text" rows="5" required="true" style="width: 95%;"></textarea>
+</label>
+</div>
+<label>Comment Title
+<div>
+  <input id="comment-title" name="comment-title" type="text" required="true"  style="width: 95%;">
+</label>
+</div>
+<label>Color
+<div>
+  <input id="color" name="color" list="color-names" type="text" required=""  style="width: 95%;">
+  (yellow is default)
+  <datalist id="color-names">
+    <option label="medium-red" value="bg-medium-red"></option>
+    <option label="medium-green" value="bg-medium-green"></option>
+    <option label="medium-yellow" value="bg-medium-yellow"></option>
+    <option label="medium-blue" value="bg-medium-blue"></option>
+    <option label="medium-maroon" value="bg-medium-maroon"></option>
+    <option label="medium-purple" value="bg-medium-purple"></option>
+    <option label="medium-orange" value="bg-medium-orange"></option>
+    <option label="medium-cyan" value="bg-medium-cyan"></option>
+    <option label="medium-pink" value="bg-medium-pink"></option>
+    <option label="medium-red" value="bg-medium-red"></option>
+    <option label="medium-green" value="bg-medium-green"></option>
+    <option label="medium-yellow" value="bg-medium-yellow"></option>
+    <option label="medium-blue" value="bg-medium-blue"></option>
+    <option label="medium-maroon" value="bg-medium-maroon"></option>
+    <option label="medium-purple" value="bg-medium-purple"></option>
+    <option label="medium-orange" value="bg-medium-orange"></option>
+    <option label="medium-cyan" value="bg-medium-cyan"></option>
+    <option label="medium-pink" value="bg-medium-pink"></option>
+  </datalist>
+</label>
+</div>
+</form>
+<button id="submitCommentButton" style="background-color: white; text-align: center; border-radius: 5px; border: 1px solid black; padding-top: 5px; margin-right: 5%; margin-top: 10%; padding-bottom: 5px;">Submit Comment</button>`
+
+  // <div id="submitCommentButton" style="background-color: white; text-align: center; border-radius: 5px; border: 1px solid black; padding-top: 5px; margin-right: 5%; margin-top: 10%; padding-bottom: 5px;">
+  //   Submit Comment
+  // </div>
