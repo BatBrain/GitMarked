@@ -1,3 +1,7 @@
+<script type="text/javascript">
+  var submittedID = <%- submittedAssignment[0].dataValues.id %>
+</script>
+
 <% if (!submittedAssignment[0]) { %>
 
   <div class="student-container text-center">
@@ -14,7 +18,10 @@
 
   <% if (submittedAssignment[0].status == 'Marked') { %>
 
-    <% include codemirror %>
+    <script language="javascript">
+      window.location.href = `/codemirror2/${submittedID}`
+    </script>
+
 
   <% } else if (submittedAssignment[0].status == 'Submitted') { %>
 

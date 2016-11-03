@@ -9,7 +9,9 @@ const Comment = db.define('Comment', {
   title: Sequelize.STRING,
   text: Sequelize.STRING,
   type: Sequelize.STRING,
-  line_uri: Sequelize.STRING
+  line_start: Sequelize.INTEGER,
+  line_end: Sequelize.INTEGER,
+  file_id: Sequelize.INTEGER
 });
 
 //   , {

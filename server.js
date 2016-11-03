@@ -378,6 +378,52 @@ app.get ('/find/filecomments', ensureAuthenticated, function(req, res) {
     })
   })
 })
+
+app.post("/addNewComment", function(req, res){
+  console.log(req.body)
+  Submitted_Assignment.findAll({
+    attributes: [
+      'status'
+    ],
+    where: {
+      id: req.body.subID
+    }
+  })
+  .then(function(subAssignData) {
+    if (subAssignData[0].dataValues.status == 'Submitted') {
+      Submitted_Assignment.updateAttributes({
+        status: 'Marked'
+      })
+    }
+
+    File.findOrCreate({
+      where: {
+        file_path: req.body.path,
+        sub_assign_id: req.body.subID
+      },
+      defaults: {
+        file_path: req.body.path,
+        sub_assign_id: req.body.subID
+      }
+    })
+    .then(function(row, trueOrFalse) {
+      Comment.create({
+          title: req.body.title,
+          text: req.body.text,
+          type: req.body.type,
+          sub_assign_id: req.body.subID,
+          line_uri: "no one cares about this right now",
+          line_start: req.body.line_start,
+          line_end: req.body.line_end,
+          file_id: row[0].dataValues.id
+        })
+      .then(function(row) {
+        console.log(row)
+        res.sendStatus(200)
+      })
+    })
+  })
+})
 //=== MW Functions ===================================================================
 
 function ensureAuthenticated(req, res, next) {
@@ -453,7 +499,7 @@ function makeFetchUrl(submittedURL){
 //       status: 'Marked'
 //     })
 //   }
-
+//
 //   File.findOrCreate({
 //     file_path: 'GIVE_THE_FILE_PATH_HERE',
 //     sub_assign_id: 'GIVE_THE_SUB_ASSIGN_ID_HERE'

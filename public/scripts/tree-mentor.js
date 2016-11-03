@@ -69,6 +69,7 @@ $(() => {
                 //console.log("Oh look, time to do nothing!")
                 return
               }
+              getComments(data.node.original)
             })
             .jstree({
             "core" : {
@@ -177,17 +178,15 @@ function getComments(eventObject){
 $( document ).ready(function(){
   $("#comments").append(stupidCommentForm)
   $("#addNewComment").on("submit", function(event, data){
-    debugger
     let selection = editor.listSelections()[0]
     let postData = {
       subID: subID,
       path: currentFilePath,
-      line_start: selection.anchor.line + 1,
-      line_end: selection.head.line + 1,
+      line_start: Math.min((selection.anchor.line + 1), (selection.head.line + 1)),
+      line_end: Math.max((selection.anchor.line + 1), (selection.head.line + 1)),
       text: this[0].value,
       title: this[1].value,
       type: this[2].value,
-      success: function(){},
     }
     event.preventDefault()
     $.ajax({
@@ -196,11 +195,16 @@ $( document ).ready(function(){
       data: postData
     })
     .then( function(data, status, code){
-      debugger
-      return data
-      $("#addNewComment").submit()
+      $.ajax({
+        method: "GET",
+        url: `/find/filecomments?id=${subID}&path=${currentFilePath}`,
+      }).done((response) => {
+        highlightLine(response)
+        $("#comments").replaceWith(stupidCommentForm)
+        $("#addNewComment").on("submit", repeatListener(event, data))
+      })
     }, function(code, status, error){
-      alert("Issue with creating a function: ", code, status, error)
+      alert("Issue with creating a comment: ", + status)
     })
   })
 })
@@ -246,6 +250,37 @@ let stupidCommentForm = `<form id="addNewComment" style="padding-left: 5%;">
 </form>
 <button id="submitCommentButton" style="background-color: white; text-align: center; border-radius: 5px; border: 1px solid black; padding-top: 5px; margin-right: 5%; margin-top: 10%; padding-bottom: 5px;">Submit Comment</button>`
 
+function repeatListener(event, data){
+  let selection = editor.listSelections()[0]
+  let postData = {
+    subID: subID,
+    path: currentFilePath,
+    line_start: Math.min((selection.anchor.line + 1), (selection.head.line + 1)),
+    line_end: Math.max((selection.anchor.line + 1), (selection.head.line + 1)),
+    text: this[0].value,
+    title: this[1].value,
+    type: this[2].value,
+  }
+  event.preventDefault()
+  $.ajax({
+    type: "POST",
+    url: "/addNewComment",
+    data: postData
+  })
+  .then( function(data, status, code){
+    $.ajax({
+      method: "GET",
+      url: `/find/filecomments?id=${subID}&path=${currentFilePath}`,
+    }).done((response) => {
+      highlightLine(response)
+      $("#comments").replaceWith(stupidCommentForm)
+      $("#addNewComment").on("submit", repeatListener(event, data))
+
+    })
+  }, function(code, status, error){
+    alert("Issue with creating a comment: ", + status)
+  })
+}
   // <div id="submitCommentButton" style="background-color: white; text-align: center; border-radius: 5px; border: 1px solid black; padding-top: 5px; margin-right: 5%; margin-top: 10%; padding-bottom: 5px;">
   //   Submit Comment
   // </div>
