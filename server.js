@@ -307,7 +307,7 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
           res.render('assignment-student', {
             user: req.user,
             assignment: assignmentList,
-            submittedAssignment: submittedAssignmentList,
+            submittedAssignment: (submittedAssignmentList || 0),
             repoURL: repoURLContainer,
             assignmentId: req.params.id,
             userId: studentIdentification })
