@@ -303,14 +303,23 @@ app.get('/student/assignments/:id', ensureAuthenticated, function(req, res){
           } else {
             repoURLContainer = undefined;
           }
-
-          res.render('assignment-student', {
-            user: req.user,
-            assignment: assignmentList,
-            submittedAssignment: (submittedAssignmentList || 0),
-            repoURL: repoURLContainer,
-            assignmentId: req.params.id,
-            userId: studentIdentification })
+          if (submittedAssignmentList[0]) {
+            res.render('assignment-student', {
+              user: req.user,
+              assignment: assignmentList,
+              submittedAssignment: submittedAssignmentList,
+              repoURL: repoURLContainer,
+              assignmentId: req.params.id,
+              userId: studentIdentification })
+          } else {
+            res.render("submitbutton", {
+              user: req.user,
+              assignment: assignmentList,
+              repoURL: repoURLContainer,
+              assignmentId: req.params.id,
+              userId: studentIdentification
+            })
+          }
         })
       })
 })
