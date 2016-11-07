@@ -3,8 +3,8 @@
 require('dotenv').config();
 const http = require('http')
 
-const PORT                  = process.env.PORT || 8080;
-const ENV                   = process.env.ENV || "development";
+// const PORT                  = process.env.PORT || 8080;
+// const ENV                   = process.env.ENV || "development";
 const express               = require("express");
 const bodyParser            = require("body-parser");
 var lessMiddleware          = require('less-middleware');
@@ -29,8 +29,8 @@ const Submitted_Assignment  = require('./db/models/submitted_assignment');
 const Comment               = require('./db/models/comment');
 const File                  = require('./db/models/file');
 
-const GITHUB_CLIENT_ID      = process.env.GITHUB_CLIENT_ID
-const GITHUB_CLIENT_SECRET  = process.env.GITHUB_CLIENT_SECRET
+// const GITHUB_CLIENT_ID      = process.env.GITHUB_CLIENT_ID
+// const GITHUB_CLIENT_SECRET  = process.env.GITHUB_CLIENT_SECRET
 
 //const usersRoutes = require("./routes/users");
 function log(text){console.log(chalk.black.bgYellow.bold(text))};
