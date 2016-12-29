@@ -4,7 +4,7 @@ An application that helps students to improve their coding prowess by connecting
 
 ## Description
 
-A student can sumbit his/her github repo url, while a mentor can then view the full repo tree using the application, add comments to files, and save them. Each comment has corresponding highlighted code sections. Submitted feedback can then be viewed by the student.
+A student can submit his/her github repo url, while a mentor can then view the full repo tree using the application, add comments to files, and save them. Each comment has corresponding highlighted code sections. Submitted feedback can then be viewed by the student.
 
 ## Motivation
 
