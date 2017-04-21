@@ -22,9 +22,9 @@
    "dialect": "mysql"
  },
  "production": {
-   "username": process.env.USERNAME,
-   "password": process.env.PASSWORD,
-   "database": process.env.DATABASE,
+   "username": "process.env.USERNAME",
+   "password": "process.env.PASSWORD",
+   "database": "process.env.DATABASE",
    "host": "ec2-54-83-27-147.compute-1.amazonaws.com",
    "port": "5432",
    "dialect": "postgres",
