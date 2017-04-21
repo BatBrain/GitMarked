@@ -1,6 +1,6 @@
 "use strict";
 
-require('dotenv').config();
+//require('dotenv').config();
 const http = require('http')
 
 const PORT                  = process.env.PORT || 8080;
@@ -50,7 +50,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://127.0.0.1:8080/auth/github/callback",
+    callbackURL: "https://gitmarked.herokuapp.com/auth/github/callback",
   },
   function(accessToken, refreshToken, profile, done) {
     log("GitHub returned something! Huzzah!");
