@@ -5,7 +5,7 @@
  */
 
 const Sequelize = require('sequelize');
-const env       = 'development';
+const env       = process.env.NODE_ENV || 'development';
 const config    = require(__dirname + '/../config.json')[env];
 
 // Load our connection based on config file
