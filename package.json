@@ -1,6 +1,6 @@
 {
   "name": "gitmarked",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Project marking and commenting tool for educators and students",
   "main": "index.js",
   "scripts": {
